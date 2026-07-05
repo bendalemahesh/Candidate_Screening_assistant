@@ -90,6 +90,11 @@ http://localhost:8501
 
 ---
 
+## Deployed Web Application Link
+
+```bash
+https://bendalemahesh-candidate-screening-assistant-appapp-zvxgik.streamlit.app/
+```
 ## 🧠 How It Works
 
 1. User uploads resumes
