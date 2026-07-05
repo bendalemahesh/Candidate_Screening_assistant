@@ -26,11 +26,11 @@ An AI-powered recruitment assistant that helps automate resume screening, candid
 
 ## 🛠️ Tech Stack
 
-- Python 3.x
+- Python 3.14.6
 - Streamlit (Frontend UI)
 - Pandas / NumPy (Data handling)
 - Scikit-learn (ML model / similarity matching)
-- NLP (spaCy / NLTK)
+- NLP (spaCy)
 - PyPDF2 / docx (Resume parsing)
 
 ---
@@ -56,8 +56,8 @@ AI-Recruiter-Assistant/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/ai-recruiter-assistant.git
-cd ai-recruiter-assistant
+git clone https://github.com/bendalemahesh/Candidate_Screening_assistant.git
+cd Candidate_Screening_assistant
 ````
 
 ### 2. Create virtual environment (optional but recommended)
@@ -79,7 +79,7 @@ pip install -r requirements.txt
 ## ▶️ Run the Application
 
 ```bash
-streamlit run app.py
+streamlit run App/app.py
 ```
 
 Then open:
@@ -108,40 +108,20 @@ http://localhost:8501
 
 ---
 
-## 📌 Future Improvements
+## 📌 Future Enhancements
 
-* Integration with LinkedIn API
-* Advanced AI ranking model (BERT-based)
+* Integration with APIs
+* Advanced AI ranking model
 * Email automation for shortlisted candidates
 * Multi-job role comparison dashboard
 
 ---
 
-## 🤝 Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
 ## 👨‍💻 Author
 
-Developed by **Mahesh Bendale**
-
-```
-
----
-
-If you want, I can also:
-✔ Make it look more “hackathon submission ready”  
-✔ Add badges (Streamlit / Python / License)  
-✔ Customize it exactly to your Week 1 submission format  
-✔ Or generate a GitHub-ready repo structure for you  
-
-Just tell me 👍
+Developed by **Mahesh Chandrakant Bendale and Team AI Developers**
+- 1. Team Lead: Mahesh Chandrakant Bendale
+- 2. Team Member 1: Riddhi Pravin Sarode
+- 3. Team Member 2: Purva Nilesh Chaudhari
+- 4. Team Member 3: Vishwaja Kishor Mahajan
 ```
