@@ -4,3 +4,6 @@ primaryColor = "#4F46E5"
 backgroundColor = "#0E1117"
 secondaryBackgroundColor = "#262730"
 textColor = "#FAFAFA"
+
+[secrets]
+GOOGLE_API_KEY = "ENTER_YOUR_API_KEY"
