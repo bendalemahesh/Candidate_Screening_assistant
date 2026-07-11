@@ -5,37 +5,37 @@ resume_parser_prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             """
-You are an expert ATS Resume Parser.
+            You are an expert ATS Resume Parser.
 
-Extract the following information from the resume.
+            Extract the following information from the resume.
 
-Return ONLY valid JSON.
+            Return ONLY valid JSON.
 
-Schema:
+            Schema:
 
-{{
-  "skills": [],
-  "education": [],
-  "experience": [],
-  "projects": [],
-  "certifications": [],
-  "summary": ""
-}}
+            {{
+            "skills": [],
+            "education": [],
+            "experience": [],
+            "projects": [],
+            "certifications": [],
+            "summary": ""
+            }}
 
-Rules:
-- Return only JSON.
-- Do not explain anything.
-- Do not use markdown.
-- If a field is missing, return an empty list or null.
-"""
+            Rules:
+            - Return only JSON.
+            - Do not explain anything.
+            - Do not use markdown.
+            - If a field is missing, return an empty list or null.
+            """
         ),
         (
-            "human",
-            """
-Resume:
+        "human",
+        """
 
-{resume}
-"""
+        {resume}
+        """
         )
     ]
 )
+
