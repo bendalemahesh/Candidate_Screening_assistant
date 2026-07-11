@@ -64,7 +64,7 @@ if screen:
             resume_text,
             height=400
         )
-        st.info("AI-powered candidate screening will be implemented in next submission.")
+        st.info("AI-powered candidate screening will be implemented in this week.")
 
         resume_text = "\n".join(
             doc.page_content for doc in documents

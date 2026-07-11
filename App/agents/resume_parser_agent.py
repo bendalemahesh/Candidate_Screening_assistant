@@ -1,6 +1,6 @@
 from services.spacy_service import SpacyService
 from prompts.resume_parser_prompt import resume_parser_prompt
-from models.gemini_model import llm
+from models.groq_model import llm
 from models.candidate_profile_model import CandidateProfile
 
 
