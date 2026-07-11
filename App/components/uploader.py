@@ -3,18 +3,18 @@ import streamlit as st
 
 def render_uploader():
 
-    st.subheader("📂 Resume Upload")
+    st.subheader("📄 Upload Documents")
 
     resume = st.file_uploader(
-        "Upload Candidate Resume",
-        type=["pdf", "docx"]
+        "Upload Resume",
+        type=["pdf", "docx"],
+        key="resume"
     )
 
-    st.subheader("📝 Job Description")
-
-    job_description = st.text_area(
-        "Paste Job Description",
-        height=220
+    jd = st.file_uploader(
+        "Upload Job Description",
+        type=["pdf", "docx"],
+        key="jd"
     )
 
     screen = st.button(
@@ -22,4 +22,4 @@ def render_uploader():
         use_container_width=True
     )
 
-    return resume, job_description, screen
+    return resume, jd, screen

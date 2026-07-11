@@ -8,6 +8,9 @@ from components.footer import render_footer
 from components.custom_css import load_css
 from services.document_loader_service import get_file_loader
 from services.resume_analyzer import ResumeAnalyzer
+from services.matching_service import MatchingService
+from agents.job_description_agent import JobDescriptionAgent
+
 
 
 # Page Configuration
@@ -32,51 +35,107 @@ render_header()
 render_metrics()
 
 # Resume Upload Section
-resume, job_description, screen = render_uploader()
+resume, jd, screen = render_uploader()
 
 # Placeholder Logic
 if screen:
     if resume is None:
-        st.warning("Please upload a resume.")
-    elif job_description.strip() == "":
-        st.warning("Please enter a Job Description.")
+        st.warning("Please upload a Resume.")
+        st.stop()
+
+    if jd is None:
+        st.warning("Please upload a Job Description.")
+        st.stop()
     else:
         import os
 
-        # Create uploads folder
+        import os
+
         os.makedirs("App/uploads/assets", exist_ok=True)
 
-        # Save uploaded file
-        resume_path = os.path.join("App/uploads/assets", resume.name)
+        resume_path = os.path.join(
+            "App/uploads/assets",
+            resume.name
+        )
+
+        jd_path = os.path.join(
+            "App/uploads/assets",
+            jd.name
+        )
 
         with open(resume_path, "wb") as f:
             f.write(resume.getbuffer())
 
-        # Load document using LangChain
-        documents = get_file_loader(resume_path)
+        with open(jd_path, "wb") as f:
+            f.write(jd.getbuffer())
 
-        # Display extracted text
-        resume_text = "\n\n".join(doc.page_content for doc in documents)
+        # Load document using LangChain
+        resume_docs = get_file_loader(resume_path)
+
+        jd_docs = get_file_loader(jd_path)
+
+        resume_text = "\n".join(
+            doc.page_content
+            for doc in resume_docs
+        )
+
+        jd_text = "\n".join(
+            doc.page_content
+            for doc in jd_docs
+        )
 
         st.success("✅ Resume uploaded successfully!")
 
+        st.subheader("Extracted Resume")
         st.text_area(
-            "Extracted Resume",
+            "",
             resume_text,
+            height=400
+        )
+        st.subheader("Extracted Job Description")
+        st.text_area(
+            "",
+            jd_text,
             height=400
         )
         st.info("AI-powered candidate screening will be implemented in this week.")
 
         resume_text = "\n".join(
-            doc.page_content for doc in documents
+            doc.page_content for doc in resume_docs
         )
 
-        agent = ResumeParserAgent()
+        resume_agent = ResumeParserAgent()
 
-        result = agent.parse_resume(resume_text)
+        jd_agent = JobDescriptionAgent()
+
+        result = resume_agent.parse_resume(resume_text)
 
         candidate = result["candidate"]
         analysis = result["analysis"]
+
+        job = jd_agent.parse_job_description(jd_text)
+
+        st.subheader("👤 Candidate")
+        st.json(candidate.model_dump())
+
+        st.subheader("📝 Resume Analysis")
+        st.json(analysis.model_dump())
+
+        st.subheader("💼 Job Description")
+        st.json(job.model_dump())
+
+        match = MatchingService.calculate_match(
+            candidate,
+            job
+        )
+        
+        candidate = result["candidate"]
+        analysis = result["analysis"]
+
+        #match = MatchingService.calculate_match(
+        #    candidate.skills
+        #)
+
 
         # analysis = ResumeAnalyzer.analyze(candidate)
 
@@ -102,6 +161,19 @@ if screen:
             st.warning("🟡 Hold")
         else:
             st.error("🔴 Reject")
+
+        st.subheader("📊 Resume Match")
+
+        st.metric(
+            "Match Score",
+            f"{match['match_score']}%"
+        )
+
+        st.write("### ✅ Matched Skills")
+        st.write(match["matched_skills"])
+
+        st.write("### ❌ Missing Skills")
+        st.write(match["missing_skills"])
 
 # Footer
 render_footer()
