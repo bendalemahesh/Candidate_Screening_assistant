@@ -43,10 +43,10 @@ if screen:
         import os
 
         # Create uploads folder
-        os.makedirs("App/uploads", exist_ok=True)
+        os.makedirs("App/uploads/assets", exist_ok=True)
 
         # Save uploaded file
-        resume_path = os.path.join("App/uploads", resume.name)
+        resume_path = os.path.join("App/uploads/assets", resume.name)
 
         with open(resume_path, "wb") as f:
             f.write(resume.getbuffer())
