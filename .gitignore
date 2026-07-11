@@ -1,26 +1,5 @@
-
-# Python
-/__pycache__/
-*.pyc
-*.pyo
-/App/uploads/assets/
-
-# Environment
 .env
 .venv/
-venv/
-
-# Database
-*.db
-
-# VS Code
 .vscode/
-
-# Streamlit cache
-.streamlit/
-
-# macOS
-.DS_Store
-
-# Windows
-Thumbs.db
+__pycache__/
+*.pyc
