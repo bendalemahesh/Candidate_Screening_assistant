@@ -7,6 +7,7 @@ from components.uploader import render_uploader
 from components.footer import render_footer
 from components.custom_css import load_css
 from services.document_loader_service import get_file_loader
+from services.resume_analyzer import ResumeAnalyzer
 
 
 # Page Configuration
@@ -72,9 +73,35 @@ if screen:
 
         agent = ResumeParserAgent()
 
-        candidate = agent.parse_resume(resume_text)
+        result = agent.parse_resume(resume_text)
 
+        candidate = result["candidate"]
+        analysis = result["analysis"]
+
+        # analysis = ResumeAnalyzer.analyze(candidate)
+
+        st.subheader("👤 Candidate Information")
         st.json(candidate.model_dump())
+
+        st.subheader("📝 Candidate Summary")
+        st.write(analysis.candidate_summary)
+
+        st.subheader("💪 Strengths")
+        for strength in analysis.strengths:
+            st.success(f"✔ {strength}")
+
+        st.subheader("⚠️ Weaknesses")
+        for weakness in analysis.weaknesses:
+            st.warning(f"• {weakness}")
+
+        st.subheader("🎯 Recommendation")
+
+        if analysis.recommendation == "Shortlist":
+            st.success("🟢 Shortlist")
+        elif analysis.recommendation == "Hold":
+            st.warning("🟡 Hold")
+        else:
+            st.error("🔴 Reject")
 
 # Footer
 render_footer()

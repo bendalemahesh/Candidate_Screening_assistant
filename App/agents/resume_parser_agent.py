@@ -2,7 +2,8 @@ from services.spacy_service import SpacyService
 from prompts.resume_parser_prompt import resume_parser_prompt
 from models.groq_model import llm
 from models.candidate_profile_model import CandidateProfile
-
+from models.groq_model import llm
+from services.resume_analyzer import ResumeAnalyzer
 
 class ResumeParserAgent:
 
@@ -10,10 +11,11 @@ class ResumeParserAgent:
 
         self.spacy = SpacyService()
 
-        # Gemini will directly return CandidateProfile
         self.structured_llm = llm.with_structured_output(CandidateProfile)
 
         self.chain = resume_parser_prompt | self.structured_llm
+
+        self.resume_analyzer = ResumeAnalyzer(llm)
 
     def parse_resume(self, resume_text: str):
 
@@ -32,12 +34,14 @@ class ResumeParserAgent:
             "github": self.spacy.extract_github(resume_text),
         }
 
-        # ---------- Gemini ----------
+        # ---------- Groq ----------
+        print("Calling Candidate Extraction...")
         profile = self.chain.invoke(
             {
                 "resume": resume_text
             }
         )
+        print("Candidate Extraction Success")
 
         # Merge spaCy results
         profile.full_name = basic_info["full_name"]
@@ -47,4 +51,11 @@ class ResumeParserAgent:
         profile.linkedin = basic_info["linkedin"]
         profile.github = basic_info["github"]
 
-        return profile
+        print("Calling Resume Analysis...")
+        analysis = self.resume_analyzer.analyze(profile.model_dump())
+        print("Resume Analysis Success")
+
+        return {
+            "candidate": profile,
+            "analysis": analysis
+        }
