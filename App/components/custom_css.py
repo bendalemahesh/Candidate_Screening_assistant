@@ -12,6 +12,11 @@ def load_css():
             padding-bottom:2rem;
         }
 
+        .sidebar{
+            background-color:#6897ea;
+            
+        }
+
         div[data-testid="metric-container"]{
             border-radius:12px;
             padding:18px;

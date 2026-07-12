@@ -50,3 +50,5 @@ class CandidateProfile(BaseModel):
     certifications: list[Certification] = Field(default_factory=list)
 
     summary: Optional[str] = None
+
+    resume_text: Optional[str] = None

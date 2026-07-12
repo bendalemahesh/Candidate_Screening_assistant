@@ -36,3 +36,9 @@ class JobDescription(BaseModel):
     certifications: list[str] = Field(default_factory=list)
 
     job_description: Optional[str] = None
+
+    match_skills: list[str] = Field(default_factory=list)
+
+    
+
+    

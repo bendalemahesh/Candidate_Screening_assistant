@@ -1,0 +1,33 @@
+
+
+============================
+
+Candidate ID:
+1
+
+Name:
+MAHESH BENDALE
+
+Email:
+bendalemahesh8@gmail.com
+
+Phone:
+9112884785
+
+Location:
+Savda, Maharashtra
+
+Skills:
+["Python", "NumPy", "Pandas", "Matplotlib", "HTML", "CSS", "Streamlit", "MySQL", "Git", "VS Code", "MS Office"]
+
+Education:
+[{"degree": "Higher Education (10+2)", "branch": "Science (PCMB)", "college": "Dhanaji Nana and Kanishtha Mahavidyalaya, Khiroda", "start_year": "Sep 2024", "end_year": "Oct 2025"}, {"degree": "Bachelor of Technology \u2013 Btech", "branch": "CSE-DS", "college": "G H Raisoni College Engineering And Management, Jalgaon", "start_year": "Aug 2025", "end_year": "Aug 2029"}]
+
+Experience:
+[{"company": "Agentic AI, Capabl India", "designation": "", "duration": "Jun 2026 - Present", "description": "Agentic AI development"}]
+
+Summary:
+Data Science student with knowledge of Python, SQL, Pandas, NumPy, Machine Learning, and Data Visualization. Passionate about data-driven problem solving and AI technologies. Seeking opportunities to apply analytical skills and gain industry experience through internships and projects.
+
+============================
+
