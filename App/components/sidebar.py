@@ -23,7 +23,6 @@ def render_sidebar():
             "⚙️ Settings",
             "ℹ️ About",
         ],
-            index=0,
     )
 
         st.divider()
