@@ -24,7 +24,7 @@ def render_sidebar():
             "ℹ️ About",
         ],
             index=0,
-            label_visibility="collapsed"
+            label_visibility="expanded"
     )
 
         st.divider()

@@ -217,17 +217,17 @@ elif page == "🏠 Dashboard":
 elif page == "💬 Recruiter Chat":
 
     st.title("💬 Recruiter Chat")
-    st.info("Coming in Week 2")
+    st.info("Coming in Week 3")
 
 elif page == "👥 Candidate Database":
 
     st.title("👥 Candidate Database")
-    st.info("Coming in Week 2")
+    st.info("Coming in Week 3")
 
 elif page == "📊 Analytics":
 
     st.title("📊 Analytics")
-    st.info("Coming in Week 3")
+    st.info("Coming in Week 4")
 
 elif page == "⚙️ Settings":
 
