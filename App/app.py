@@ -63,9 +63,6 @@ if page == "📄 Screen Candidate":
     # Header
     render_header()
 
-    #sidebar
-    render_sidebar
-
     # Dashboard Metrics
     render_metrics()
 
