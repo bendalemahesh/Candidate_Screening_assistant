@@ -41,7 +41,7 @@ def render_sidebar():
 
         st.divider()
 
-        st.subheader("Quick Stts")
+        st.subheader("Quick Status")
 
         st.metric("Candidates", "157")
 
