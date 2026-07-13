@@ -13,7 +13,7 @@ def render_sidebar():
         st.subheader("Navigation")
 
         page = st.radio(
-            "",
+            "Navigation",
         [
             "📄 Screen Candidate",
             "🏠 Dashboard",
