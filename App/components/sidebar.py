@@ -43,11 +43,11 @@ def render_sidebar():
 
         st.subheader("Quick Stats")
 
-        st.metric("Candidates", "0")
+        st.metric("Candidates", "157")
 
-        st.metric("Jobs", "0")
+        st.metric("Jobs", "12")
 
-        st.metric("Screenings", "0")
+        st.metric("Screenings", "83")
 
         st.divider()
 

@@ -24,8 +24,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
 st.markdown("""
-<h1 style="text-align:center;color:#2563EB;">
+<h1 style="text-align:center;color:white;">
 🤖 Recruiter AI Assistant
 </h1>
 
@@ -33,6 +34,8 @@ st.markdown("""
 AI Powered Resume Screening System
 </p>
 """, unsafe_allow_html=True)
+
+st.divider()
 
 # Load Custom CSS
 load_css()
@@ -48,9 +51,6 @@ footer {
     visibility: hidden;
 }
 
-header {
-    visibility: hidden;
-}
 
 </style>
 """, unsafe_allow_html=True)

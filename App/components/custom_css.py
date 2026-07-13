@@ -24,6 +24,13 @@ def load_css():
             border:1px solid #E5E7EB;
         }
 
+        .stApp {
+        background-image: url("https://www.shutterstock.com/search/recruitment-background");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
         </style>
         """,
         unsafe_allow_html=True,
