@@ -26,7 +26,7 @@ An AI-powered recruitment assistant that helps automate resume screening, candid
 
 ## 🛠️ Tech Stack
 
-- Python 3.14.6
+- Python 3.12.10
 - Streamlit (Frontend UI)
 - Pandas / NumPy (Data handling)
 - Scikit-learn (ML model / similarity matching)
@@ -63,7 +63,7 @@ cd Candidate_Screening_assistant
 ### 2. Create virtual environment (optional but recommended)
 
 ```bash
-python -m venv venv
+py -3.12 -m venv .venv
 source venv/bin/activate   # Mac/Linux
 venv\Scripts\activate      # Windows
 ```
