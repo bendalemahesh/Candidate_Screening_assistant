@@ -40,6 +40,20 @@ st.divider()
 # Load Custom CSS
 load_css()
 
+st.markdown("""
+<style>
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+
+</style>
+""", unsafe_allow_html=True)
 # Sidebar
 
 page = render_sidebar()
