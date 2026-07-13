@@ -13,7 +13,7 @@ def render_sidebar():
         st.subheader("Navigation")
 
         page = st.radio(
-            "Navigation",
+            "",
         [
             "📄 Screen Candidate",
             "🏠 Dashboard",
@@ -23,6 +23,8 @@ def render_sidebar():
             "⚙️ Settings",
             "ℹ️ About",
         ],
+            index=0,
+            label_visibility="collapsed"
     )
 
         st.divider()
@@ -39,13 +41,13 @@ def render_sidebar():
 
         st.divider()
 
-        st.subheader("Quick Status")
+        st.subheader("Quick Stats")
 
-        st.metric("Candidates", "157")
+        st.metric("Candidates", "0")
 
-        st.metric("Jobs", "12")
+        st.metric("Jobs", "0")
 
-        st.metric("Screenings", "83")
+        st.metric("Screenings", "0")
 
         st.divider()
 
