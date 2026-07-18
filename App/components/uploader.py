@@ -1,9 +1,6 @@
 import streamlit as st
 
-
-def render_uploader():
-
-    st.subheader("📄 Upload Documents")
+def render_resume_uploader():
 
     resume = st.file_uploader(
         "Upload Resume",
@@ -11,15 +8,22 @@ def render_uploader():
         key="resume"
     )
 
-    jd = st.file_uploader(
-        "Upload Job Description",
-        type=["pdf", "docx"],
-        key="jd"
-    )
-
     screen = st.button(
         "🚀 Screen Candidate",
         use_container_width=True
     )
 
-    return resume, jd, screen
+    return resume, screen
+
+
+
+
+def render_job_uploader():
+
+    jd = st.file_uploader(
+        "Upload Job Description",
+        type=["pdf", "docx"],
+        key="job_upload"
+    )
+
+    return jd

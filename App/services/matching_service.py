@@ -1,4 +1,4 @@
-from typing import List
+import json
 
 
 class MatchingService:
@@ -6,20 +6,32 @@ class MatchingService:
     @staticmethod
     def calculate_match(candidate, job):
 
+        print("✅ NEW MatchingService Running")
+
         candidate_skills = {
             skill.lower().strip()
             for skill in candidate.skills
         }
 
-        job_skills = {
-            skill.lower().strip()
-            for skill in job.required_skills
-        }
+        if isinstance(job, dict):
+
+            job_skills = {
+                skill.lower().strip()
+                for skill in job["required_skills"]
+            }
+
+        else:
+
+            job_skills = {
+                skill.lower().strip()
+                for skill in job.required_skills
+            }
 
         matched = candidate_skills & job_skills
 
         score = round(
-            len(matched) / max(len(job_skills), 1) * 100
+            len(matched) /
+            max(len(job_skills), 1) * 100
         )
 
         return {

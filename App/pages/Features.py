@@ -1,17 +1,19 @@
 import streamlit as st
 
-st.write("Welcome to the Recruiter AI Assistant.")
+def render():
 
-st.title("Features")
+    st.write("Welcome to the Recruiter AI Assistant.")
 
-st.markdown("""
-✅ Resume Upload
+    st.title("Features")
 
-✅ Candidate Screening
+    st.markdown("""
+    ✅ Resume Upload
 
-✅ Job Description Matching
+    ✅ Candidate Screening
 
-✅ AI Recommendations
+    ✅ Job Description Matching
 
-❌ Candidate Ranking
-""")
+    ✅ AI Recommendations
+
+    ❌ Candidate Ranking
+    """)

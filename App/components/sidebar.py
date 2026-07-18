@@ -16,11 +16,13 @@ def render_sidebar():
             "Navigation",
         [
             "📄 Screen Candidate",
+            "💼 Upload Job Description",
             "🏠 Dashboard",
             "💬 Recruiter Chat",
             "👥 Candidate Database",
             "📊 Analytics",
             "⚙️ Settings",
+            "✨ Features",
             "ℹ️ About",
         ],
             index=0,
