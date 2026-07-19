@@ -6,7 +6,6 @@ from database.database import get_connection
 class DatabaseService:
 
     def __init__(self):
-
         self.conn = get_connection()
 
         self.cursor = self.conn.cursor()
@@ -46,9 +45,9 @@ class DatabaseService:
                 candidate.linkedin,
                 candidate.github,
                 json.dumps(candidate.skills),
-                json.dumps(candidate.education),
-                json.dumps(candidate.experience),
-                json.dumps(candidate.certifications),
+                json.dumps([edu.model_dump() for edu in candidate.education]),
+                json.dumps([exp.model_dump() for exp in candidate.experience]),
+                json.dumps([cert.model_dump() for cert in candidate.certifications]),
                 candidate.summary,
                 "",
                 None
@@ -59,6 +58,21 @@ class DatabaseService:
         self.conn.commit()
 
         return self.cursor.lastrowid
+    
+    def candidate_exists(self, candidate):
+
+        self.cursor.execute(
+            """
+            SELECT id
+            FROM candidates
+            WHERE email = ?
+            """,
+            (
+                candidate.email,
+            )
+        )
+
+        return self.cursor.fetchone()
 
     # =====================================================
     # Job
@@ -133,6 +147,25 @@ class DatabaseService:
     # =====================================================
     # Get Jobs
     # =====================================================
+    def get_job_by_id(self, job_id):
+
+        self.cursor.execute(
+            "SELECT * FROM jobs WHERE id=?",
+            (job_id,)
+        )
+
+        row = self.cursor.fetchone()
+
+        if row is None:
+            return None
+
+        job = dict(row)
+
+        job["required_skills"] = json.loads(job["required_skills"] or "[]")
+        job["preferred_skills"] = json.loads(job["preferred_skills"] or "[]")
+        job["responsibilities"] = json.loads(job["responsibilities"] or "[]")
+
+        return job
 
     def get_all_jobs(self):
 

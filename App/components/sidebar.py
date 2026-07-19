@@ -20,6 +20,7 @@ def render_sidebar():
             "🏠 Dashboard",
             "💬 Recruiter Chat",
             "👥 Candidate Database",
+            "🏆 Candidate Ranking",
             "📊 Analytics",
             "⚙️ Settings",
             "✨ Features",

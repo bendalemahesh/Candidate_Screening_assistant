@@ -12,83 +12,94 @@ def render():
 
     st.title("📄 candidate screening")
 
+    if "candidate" not in st.session_state:
+        st.session_state.candidate = None
+        st.session_state.analysis = None
+        st.session_state.top_matches = None
+        st.session_state.best_job = None
+        st.session_state.best_match = None
+
     resume, screen = render_resume_uploader()
 
-    if not screen:
-        return
+    if screen:
 
-    if resume is None:
-        st.warning("Please upload a Resume.")
-        return
+        if resume is None:
+            st.warning("Please upload a Resume.")
+            st.stop()
 
-    # ---------------- Save Resume ---------------- #
+        # ---------------- Save Resume ---------------- #
 
-    os.makedirs(
-        "App/uploads/assets/resumes",
-        exist_ok=True
-    )
-
-    resume_path = os.path.join(
-        "App/uploads/assets/resumes",
-        resume.name
-    )
-
-    with open(resume_path, "wb") as f:
-        f.write(resume.getbuffer())
-
-    # ---------------- Extract Resume Text ---------------- #
-
-    resume_docs = get_file_loader(resume_path)
-
-    resume_text = "\n".join(
-        doc.page_content
-        for doc in resume_docs
-    )
-
-    # ---------------- Parse Resume ---------------- #
-
-    resume_agent = ResumeParserAgent()
-
-    with st.spinner("🤖 AI is analyzing the resume..."):
-
-        result = resume_agent.parse_resume(resume_text)
-
-    candidate = result["candidate"]
-    analysis = result["analysis"]
-
-    # ---------------- Load Jobs ---------------- #
-
-    db = DatabaseService()
-
-    jobs = db.get_all_jobs()
-
-    if len(jobs) == 0:
-        st.warning("No Job Descriptions found. Please upload a Job Description first.")
-        st.stop()
-
-    all_matches = []
-
-    for job_data in jobs:
-
-        match = MatchingService.calculate_match(
-            candidate,
-            job_data
+        os.makedirs(
+            "App/uploads/assets/resumes",
+            exist_ok=True
         )
 
-        all_matches.append({
-            "job": job_data,
-            "match": match
-        })
+        resume_path = os.path.join(
+            "App/uploads/assets/resumes",
+            resume.name
+        )
 
-    # Sort matches by score
-    all_matches.sort(
-        key=lambda x: x["match"]["match_score"],
-        reverse=True
-    )
+        with open(resume_path, "wb") as f:
+            f.write(resume.getbuffer())
 
-    top_matches = all_matches[:5]
-    best_job = top_matches[0]["job"]
-    best_match = top_matches[0]["match"]
+        resume_docs = get_file_loader(resume_path)
+
+        resume_text = "\n".join(
+            doc.page_content
+            for doc in resume_docs
+        )
+
+        resume_agent = ResumeParserAgent()
+
+        with st.spinner("🤖 AI is analyzing the resume..."):
+
+            result = resume_agent.parse_resume(resume_text)
+
+        candidate = result["candidate"]
+        analysis = result["analysis"]
+
+        db = DatabaseService()
+        jobs = db.get_all_jobs()
+
+        if len(jobs) == 0:
+            st.warning("No Job Descriptions found.")
+            st.stop()
+
+        all_matches = []
+
+        for job_data in jobs:
+
+            match = MatchingService.calculate_match(
+                candidate,
+                job_data
+            )
+
+            all_matches.append({
+                "job": job_data,
+                "match": match
+            })
+
+        all_matches.sort(
+            key=lambda x: x["match"]["match_score"],
+            reverse=True
+        )
+
+        top_matches = all_matches[:5]
+
+        st.session_state.candidate = candidate
+        st.session_state.analysis = analysis
+        st.session_state.top_matches = top_matches
+        st.session_state.best_job = top_matches[0]["job"]
+        st.session_state.best_match = top_matches[0]["match"]
+
+    if st.session_state.candidate is None:
+        return
+
+    candidate = st.session_state.candidate
+    analysis = st.session_state.analysis
+    top_matches = st.session_state.top_matches
+    best_job = st.session_state.best_job
+    best_match = st.session_state.best_match
 
 
     st.subheader("🎯 Top Matching Jobs")
@@ -169,28 +180,14 @@ def render():
 
         db = DatabaseService()
 
-        candidate_id = db.save_candidate(candidate)
+        existing = db.candidate_exists(candidate)
 
-        jobs = db.get_all_jobs()
-        for job in jobs:
-            st.write(job)
+        if existing:
 
-        if len(jobs) == 0:
-            st.warning("No Job Descriptions found...")
-            st.stop()
-        for job in jobs:
-            st.write(job["job_title"])
+            st.warning("⚠️ Candidate already exists.")
 
-        st.success(f"Candidate saved successfully (ID: {candidate_id})")
-        st.divider()
-        print(jobs)
-        db = DatabaseService()
+        else:
 
-        jobs = db.get_all_jobs()
+            candidate_id = db.save_candidate(candidate)
 
-        print(len(jobs))
-
-        for job in jobs:
-            print(job["job_title"], job["company"])
-
-#candidate_screening()
+            st.success(f"✅ Candidate saved successfully (ID: {candidate_id})")

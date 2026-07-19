@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS jobs(
 
     work_mode TEXT,
 
-    enrollment_type TEXT,
+    employment_type TEXT,
 
     salary_range TEXT,
 

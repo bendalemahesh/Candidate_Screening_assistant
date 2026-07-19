@@ -20,6 +20,7 @@ from services.document_generator_service import DocumentGenerator
 from database.create_tables import create_tables
 from pages import (
     Candidate_Screening,
+    Candidate_Ranking,
     Upload_Jobs,
     Dashboard,
     Recruiter_ChatBot,
@@ -77,7 +78,8 @@ if page == "📄 Screen Candidate":
 
 elif page == "💼 Upload Job Description":
     Upload_Jobs.render()
-
+elif page == "🏆 Candidate Ranking":
+    Candidate_Ranking.render()
 elif page == "🏠 Dashboard":
     Dashboard.render()
 
