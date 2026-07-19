@@ -15,5 +15,5 @@ def render():
 
     ✅ AI Recommendations
 
-    ❌ Candidate Ranking
+    ✅ Candidate Ranking
     """)
