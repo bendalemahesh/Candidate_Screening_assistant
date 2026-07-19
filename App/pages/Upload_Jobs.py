@@ -104,10 +104,9 @@ def render():
 
     if st.button("💾 Save Job Description", use_container_width=True):
         db = DatabaseService()
-        job_id = db.save_job(job)
         existing = db.job_exists(job)
         
-        if existing:
+        if db.job_exists(job):
             st.warning("⚠️ This Job Description already exists.")
         else:
             job_id = db.save_job(job)
