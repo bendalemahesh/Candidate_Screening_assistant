@@ -8,3 +8,4 @@ class CandidateScreeningWorkflow:
 
     def run(self, candidate_data):
         return self.resume_analyzer.analyze(candidate_data)
+

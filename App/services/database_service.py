@@ -2,7 +2,6 @@ import json
 
 from database.database import get_connection
 
-
 class DatabaseService:
 
     def __init__(self):
