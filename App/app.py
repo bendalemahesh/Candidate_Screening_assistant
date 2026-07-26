@@ -29,6 +29,8 @@ from pages import (
     Settings,
     Features,
     About,
+    interview,
+    communication,
 )
 
 create_tables()
@@ -78,8 +80,16 @@ if page == "📄 Screen Candidate":
 
 elif page == "💼 Upload Job Description":
     Upload_Jobs.render()
+
 elif page == "🏆 Candidate Ranking":
     Candidate_Ranking.render()
+
+elif page == "📧 Communication":
+    communication.render()
+
+elif page == "📅 Interview Scheduling":
+    interview.render()
+    
 elif page == "🏠 Dashboard":
     Dashboard.render()
 

@@ -51,9 +51,6 @@ def render():
 
     st.subheader("🔥 Top Skills")
 
-    # Top skills
-    st.subheader("Top Skills")
-
     fig = px.bar(
 
     skills_df,

@@ -1,4 +1,12 @@
 import streamlit as st
+from workflows.dashboard_workflow import dashboard_workflow
+response = dashboard_workflow.invoke({
+
+        "dashboard": {}
+
+    })
+
+data = response["dashboard"]
 
 def render_sidebar():
 
@@ -18,6 +26,8 @@ def render_sidebar():
             "📄 Screen Candidate",
             "💼 Upload Job Description",
             "🏆 Candidate Ranking",
+            "📧 Communication",
+            "📅 Interview Scheduling",
             "📊 Analytics",
             "💬 Recruiter Chat",
             "👥 Candidate Database",
@@ -46,11 +56,10 @@ def render_sidebar():
 
         st.subheader("Quick Status")
 
-        st.metric("Candidates", "157")
+        st.metric("Candidates", f"{len(data["candidates"])}")
+        st.metric("Jobs", f"{len(data["jobs"])}")
 
-        st.metric("Jobs", "17")
-
-        st.metric("Screenings", "87")
+        st.metric("Screenings", f"{len(data["candidates"])}")
 
         st.divider()
 

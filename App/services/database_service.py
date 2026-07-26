@@ -268,6 +268,137 @@ class DatabaseService:
 
         return candidate
 
+    def create_interview_table(self):
+
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS interviews(
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            candidate_id INTEGER,
+
+            job_id INTEGER,
+
+            interview_date TEXT,
+
+            interview_time TEXT,
+
+            interviewer TEXT,
+
+            meeting_link TEXT,
+
+            notes TEXT
+        )
+        """)
+
+        self.conn.commit()
+
+    def schedule_interview(
+        self,
+        candidate_id,
+        job_id,
+        interview_date,
+        interview_time,
+        interviewer,
+        meeting_link,
+        notes
+    ):
+
+        self.cursor.execute(
+            """
+            INSERT INTO interviews(
+
+                candidate_id,
+                job_id,
+                interview_date,
+                interview_time,
+                interviewer,
+                meeting_link,
+                notes
+
+            )
+
+            VALUES(?,?,?,?,?,?,?)
+            """,
+            (
+                candidate_id,
+                job_id,
+                interview_date,
+                interview_time,
+                interviewer,
+                meeting_link,
+                notes
+            )
+        )
+
+        self.conn.commit()
+
+    def get_all_interviews(self):
+
+        self.cursor.execute("""
+            SELECT
+                interviews.*,
+                candidates.full_name,
+                jobs.job_title,
+                jobs.company
+
+            FROM interviews
+
+            JOIN candidates
+                ON interviews.candidate_id = candidates.id
+
+            JOIN jobs
+                ON interviews.job_id = jobs.id
+
+            ORDER BY interview_date ASC
+        """)
+
+        columns = [col[0] for col in self.cursor.description]
+
+        return [
+            dict(zip(columns, row))
+            for row in self.cursor.fetchall()
+        ]
+
+    def delete_interview(self, interview_id):
+
+        self.cursor.execute(
+            "DELETE FROM interviews WHERE id=?",
+            (interview_id,)
+        )
+
+        self.conn.commit()
+
+    def create_interview_table(self):
+
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS interviews (
+
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                candidate_id INTEGER,
+
+                job_id INTEGER,
+
+                interview_date TEXT,
+
+                interview_time TEXT,
+
+                interview_mode TEXT,
+
+                meeting_link TEXT,
+
+                interviewer TEXT,
+
+                status TEXT,
+
+                FOREIGN KEY(candidate_id) REFERENCES candidates(id),
+                FOREIGN KEY(job_id) REFERENCES jobs(id)
+
+            )
+        """)
+
+        self.conn.commit()
     # =====================================================
     # Close
     # =====================================================

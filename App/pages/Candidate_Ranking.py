@@ -91,19 +91,14 @@ def render():
 
         highest_score = max(scores)
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
 
     col1.metric(
         "👤 Candidates",
         len(candidates)
     )
-
+    
     col2.metric(
-        "💼 Jobs",
-        len(jobs)
-    )
-
-    col3.metric(
         "🏆 Highest Score",
         f"{highest_score}%"
     )
