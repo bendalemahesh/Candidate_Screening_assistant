@@ -23,9 +23,9 @@ def render():
 
     ✅ Features
 
-    ❌ Candidate Database
+    ✅ Candidate Database
 
-    ❌ Analytics
+    ✅ Analytics
 
     ❌ Settings
     """)
