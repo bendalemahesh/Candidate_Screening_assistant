@@ -16,4 +16,16 @@ def render():
     ✅ AI Recommendations
 
     ✅ Candidate Ranking
+
+    ✅ Recruiter Chatbot
+
+    ✅ About
+
+    ✅ Features
+
+    ❌ Candidate Database
+
+    ❌ Analytics
+
+    ❌ Settings
     """)

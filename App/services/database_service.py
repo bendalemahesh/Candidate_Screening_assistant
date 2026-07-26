@@ -259,7 +259,14 @@ class DatabaseService:
 
             return None
 
-        return dict(row)
+        candidate = dict(row)
+
+        candidate["skills"] = json.loads(candidate["skills"] or "[]")
+        candidate["education"] = json.loads(candidate["education"] or "[]")
+        candidate["experience"] = json.loads(candidate["experience"] or "[]")
+        candidate["certifications"] = json.loads(candidate["certifications"] or "[]")
+
+        return candidate
 
     # =====================================================
     # Close

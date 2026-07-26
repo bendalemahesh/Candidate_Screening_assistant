@@ -2,6 +2,8 @@ import streamlit as st
 
 from services.database_service import DatabaseService
 from services.matching_service import MatchingService
+from services.ai_recommendation_service import AIRecommendationService
+from agents.candidate_agent import CandidateAgent
 from models.candidate_profile_model import (
     CandidateProfile,
     Education,
@@ -9,7 +11,10 @@ from models.candidate_profile_model import (
     Certification,
 )
 
+db = DatabaseService()
 
+ai_service = AIRecommendationService()
+    
 def dict_to_candidate(data):
 
     return CandidateProfile(
@@ -120,7 +125,25 @@ def render():
                 st.subheader("❌ Missing Skills")
 
                 if match["missing_skills"]:
+
                     for skill in match["missing_skills"]:
                         st.warning(skill)
+
                 else:
                     st.success("No missing skills 🎉")
+
+# -----------------------------------------------------------------------------
+#                            AI Recommendation
+# -----------------------------------------------------------------------------
+
+            recommendation = ai_service.generate_recommendation(
+                candidate,
+                selected_job,
+                match
+            )
+
+            st.divider()
+
+            with st.expander("🤖 AI Recruiter Recommendation"):
+
+                st.markdown(recommendation)
