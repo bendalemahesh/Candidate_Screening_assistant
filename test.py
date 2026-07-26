@@ -1,15 +1,9 @@
-from langchain_core.messages import HumanMessage
+from App.workflows.dashboard_workflow import dashboard_workflow
 
-from App.workflows.analytics_workflow import analytics_workflow
+response = dashboard_workflow.invoke({
 
-response = analytics_workflow.invoke({
-
-    "candidates": [],
-
-    "jobs": [],
-
-    "analytics": {}
+    "dashboard": {}
 
 })
 
-print(response["analytics"])
+print(response["dashboard"])

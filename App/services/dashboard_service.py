@@ -1,18 +1,18 @@
 from collections import Counter
 
 from services.database_service import DatabaseService
+from services.matching_service import MatchingService
 from models.candidate_profile_model import (
     CandidateProfile,
     Education,
     Experience,
     Certification,
 )
-from services.matching_service import MatchingService
 
-class AnalyticsService:
+
+class DashboardService:
 
     def __init__(self):
-
         self.db = DatabaseService()
 
     def dict_to_candidate(self, data):
@@ -55,19 +55,15 @@ class AnalyticsService:
         jobs = self.db.get_all_jobs()
 
         skills = []
-
         companies = []
 
         for candidate in candidates:
-
             skills.extend(candidate["skills"])
 
         for job in jobs:
-
             companies.append(job["company"])
 
         skill_counter = Counter(skills)
-
         company_counter = Counter(companies)
 
         match_scores = []
@@ -86,44 +82,42 @@ class AnalyticsService:
                 )
 
                 if match["match_score"] > best_score:
-
                     best_score = match["match_score"]
 
             match_scores.append(best_score)
 
+        best_match_score = max(match_scores, default=0)
+
         return {
 
-            "average_match_score": round(
-                sum(match_scores) / max(len(match_scores),1),
-                2
-            ),
+            "candidates": candidates,
 
-            "highest_match_score": max(match_scores, default=0),
+            "jobs": jobs,
 
             "total_candidates": len(candidates),
 
             "total_jobs": len(jobs),
 
-            "top_skills": skill_counter.most_common(10),
-
-            "companies": company_counter.most_common(),
-
-            "match_scores": match_scores,
+            "best_match_score": best_match_score,
 
             "skill_names": [
-                skill for skill, _ in skill_counter.most_common(10)
+                skill
+                for skill, _ in skill_counter.most_common(10)
             ],
 
             "skill_counts": [
-                count for _, count in skill_counter.most_common(10)
+                count
+                for _, count in skill_counter.most_common(10)
             ],
 
             "company_names": [
-                company for company, _ in company_counter.most_common()
+                company
+                for company, _ in company_counter.most_common()
             ],
 
             "company_counts": [
-                count for _, count in company_counter.most_common()
+                count
+                for _, count in company_counter.most_common()
             ]
 
         }

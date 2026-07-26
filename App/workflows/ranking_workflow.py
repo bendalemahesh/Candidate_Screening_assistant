@@ -51,10 +51,9 @@ def load_job(state: RankingState):
 
     try:
 
-        job_id = state["job"]["id"]
-
-        state["job"] = db.get_job_by_id(job_id)
-
+        {
+            "job": {"id": 1}
+        }
         return state
 
     finally:
@@ -113,21 +112,25 @@ def calculate_ranking(state: RankingState):
 
             "candidate": candidate_data,
 
-            "match": match
+            "candidate_name": candidate_data["full_name"],
+
+            "email": candidate_data["email"],
+
+            "score": match["match_score"],
+
+            "matched_skills": match["matched_skills"],
+
+            "missing_skills": match["missing_skills"],
 
         })
+        
+        ranking.sort(
+            key=lambda x: x["score"],
+            reverse=True
+        )
+        state["ranking"] = ranking
 
-    ranking.sort(
-
-        key=lambda x: x["match"]["match_score"],
-
-        reverse=True
-
-    )
-
-    state["ranking"] = ranking
-
-    return state
+        return state
 
 
 
