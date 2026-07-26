@@ -1,23 +1,15 @@
 from langchain_core.messages import HumanMessage
 
-from App.workflows.candidate_screening_workflow import screening_workflow
+from App.workflows.analytics_workflow import analytics_workflow
 
-response = screening_workflow.invoke({
+response = analytics_workflow.invoke({
 
-    "candidate_id": 1,
+    "candidates": [],
 
-    "job_id": 1,
+    "jobs": [],
 
-    "candidate": {},
-
-    "job": {},
-
-    "match": {},
-
-    "recommendation": ""
+    "analytics": {}
 
 })
 
-print(response["match"])
-print()
-print(response["recommendation"])
+print(response["analytics"])
