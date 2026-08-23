@@ -26,6 +26,4 @@ def render():
     ✅ Candidate Database
 
     ✅ Analytics
-
-    ❌ Settings
     """)

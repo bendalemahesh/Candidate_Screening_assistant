@@ -26,11 +26,8 @@ from pages import (
     Recruiter_ChatBot,
     Candidate_Database,
     Analytics,
-    Settings,
     Features,
-    About,
-    interview,
-    communication,
+    About
 )
 
 create_tables()
@@ -86,6 +83,9 @@ elif page == "🏆 Candidate Ranking":
 
 elif page == "📧 Communication":
     communication.render()
+
+elif page == "📄 Assessment":
+    Assessment.render()
 
 elif page == "📅 Interview Scheduling":
     interview.render()
