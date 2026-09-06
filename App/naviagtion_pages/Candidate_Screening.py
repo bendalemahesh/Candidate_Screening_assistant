@@ -1,11 +1,14 @@
 import os
+import requests
 import streamlit as st
 from components.uploader import render_resume_uploader
-from services.document_loader_service import get_file_loader
-from services.matching_service import MatchingService
-from services.database_service import DatabaseService
-from agents.resume_parser_agent import ResumeParserAgent
-from agents.job_description_agent import JobDescriptionAgent
+from models.candidate_profile_model import CandidateProfile
+# pyrefly: ignore [missing-import]
+from schemas.analysis_schema import JobAnalysis
+from dotenv import load_dotenv
+
+load_dotenv()
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 #def candidate_screening():
 def render():
@@ -27,39 +30,37 @@ def render():
             st.warning("Please upload a Resume.")
             st.stop()
 
-        # ---------------- Save Resume ---------------- #
-
-        os.makedirs(
-            "App/uploads/assets/resumes",
-            exist_ok=True
-        )
-
-        resume_path = os.path.join(
-            "App/uploads/assets/resumes",
-            resume.name
-        )
-
-        with open(resume_path, "wb") as f:
-            f.write(resume.getbuffer())
-
-        resume_docs = get_file_loader(resume_path)
-
-        resume_text = "\n".join(
-            doc.page_content
-            for doc in resume_docs
-        )
-
-        resume_agent = ResumeParserAgent()
-
         with st.spinner("🤖 AI is analyzing the resume..."):
+            try:
+                response = requests.post(
+                    f"{BACKEND_URL}/candidates/screen",
+                    files={"file": (resume.name, resume.getvalue(), resume.type)}
+                )
+                response.raise_for_status()
+                result = response.json()
+            except Exception as e:
+                st.error(f"Error communicating with backend: {e}")
+                st.stop()
 
-            result = resume_agent.parse_resume(resume_text)
+        candidate_data = result["candidate"]
+        analysis_data = result["analysis"]
+        
+        # Instantiate model classes for consistency (or use as dict)
+        candidate = CandidateProfile(**candidate_data)
+        
+        class MockAnalysis:
+            pass
+        analysis = MockAnalysis()
+        analysis.candidate_summary = analysis_data.get("candidate_summary", "")
+        analysis.strengths = analysis_data.get("strengths", [])
+        analysis.weaknesses = analysis_data.get("weaknesses", [])
+        analysis.recommendation = analysis_data.get("recommendation", "")
 
-        candidate = result["candidate"]
-        analysis = result["analysis"]
-
-        db = DatabaseService()
-        jobs = db.get_all_jobs()
+        try:
+            jobs_response = requests.get(f"{BACKEND_URL}/jobs")
+            jobs = jobs_response.json()
+        except:
+            jobs = []
 
         if len(jobs) == 0:
             st.warning("No Job Descriptions found.")
@@ -68,19 +69,22 @@ def render():
         all_matches = []
 
         for job_data in jobs:
-
-            match = MatchingService.calculate_match(
-                candidate,
-                job_data
-            )
-
-            all_matches.append({
-                "job": job_data,
-                "match": match
-            })
+            try:
+                match_resp = requests.post(
+                    f"{BACKEND_URL}/match",
+                    json={"candidate": candidate.model_dump(), "job": job_data}
+                )
+                if match_resp.status_code == 200:
+                    match = match_resp.json()
+                    all_matches.append({
+                        "job": job_data,
+                        "match": match
+                    })
+            except:
+                pass
 
         all_matches.sort(
-            key=lambda x: x["match"]["match_score"],
+            key=lambda x: x["match"].get("match_score", 0),
             reverse=True
         )
 
@@ -177,17 +181,15 @@ def render():
     # ---------------- Save Candidate ---------------- #
 
     if st.button("💾 Save Candidate", use_container_width=True):
-
-        db = DatabaseService()
-
-        existing = db.candidate_exists(candidate)
-
-        if existing:
-
-            st.warning("⚠️ Candidate already exists.")
-
-        else:
-
-            candidate_id = db.save_candidate(candidate)
-
-            st.success(f"✅ Candidate saved successfully (ID: {candidate_id})")
+        try:
+            save_resp = requests.post(
+                f"{BACKEND_URL}/candidates",
+                json=candidate.model_dump()
+            )
+            if save_resp.status_code == 200:
+                candidate_id = save_resp.json().get("id")
+                st.success(f"✅ Candidate saved successfully (ID: {candidate_id})")
+            else:
+                st.warning(f"⚠️ {save_resp.json().get('detail', 'Failed to save')}")
+        except Exception as e:
+            st.error(f"Error saving candidate: {e}")

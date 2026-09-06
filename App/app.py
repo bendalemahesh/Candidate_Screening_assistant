@@ -1,23 +1,12 @@
-from agents import job_description_agent
-from database.update_schema import DB_PATH
 import os
 import streamlit as st
-import database.update_schema
-from agents.resume_parser_agent import ResumeParserAgent
-from components.header import render_header
+from dotenv import load_dotenv
+from database.create_tables import create_tables
 from components.sidebar import render_sidebar
-from components.metrics import render_metrics
-from components.uploader import render_resume_uploader
 from components.footer import render_footer
 from components.custom_css import load_css
-from services.document_loader_service import get_file_loader
-from services.matching_service import MatchingService
-from agents.job_description_agent import JobDescriptionAgent
 
-from services.database_service import DatabaseService
-from services.batch_maneger_service import BatchManager
-from services.document_generator_service import DocumentGenerator
-from database.create_tables import create_tables
+# Import pages
 from pages import (
     Candidate_Screening,
     Candidate_Ranking,
@@ -27,16 +16,22 @@ from pages import (
     Candidate_Database,
     Analytics,
     Features,
-    About
+    About,
 )
+from pages import interview
+from pages import communication
+from pages import Settings
 
+# Initialise DB tables on startup
+load_dotenv()
 create_tables()
+
 # Page Configuration
 st.set_page_config(
     page_title="Recruiter AI Assistant",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="expanded"
 )
 
 st.markdown("""
@@ -56,23 +51,18 @@ load_css()
 
 st.markdown("""
 <style>
-
-#MainMenu {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
-# Sidebar
 
+# Sidebar — returns selected page
 page = render_sidebar()
 
-if page == "📄 Screen Candidate":
+if page == "🏠 Dashboard":
+    Dashboard.render()
+
+elif page == "📄 Screen Candidate":
     Candidate_Screening.render()
 
 elif page == "💼 Upload Job Description":
@@ -81,33 +71,27 @@ elif page == "💼 Upload Job Description":
 elif page == "🏆 Candidate Ranking":
     Candidate_Ranking.render()
 
-elif page == "📧 Communication":
-    communication.render()
-
-elif page == "📄 Assessment":
-    Assessment.render()
+elif page == "👥 Candidate Database":
+    Candidate_Database.render()
 
 elif page == "📅 Interview Scheduling":
     interview.render()
-    
-elif page == "🏠 Dashboard":
-    Dashboard.render()
 
-elif page == "💬 Recruiter Chat":
-    Recruiter_ChatBot.render()
-
-elif page == "👥 Candidate Database":
-    Candidate_Database.render()
+elif page == "📧 Communication":
+    communication.render()
 
 elif page == "📊 Analytics":
     Analytics.render()
 
-elif page == "⚙️ Settings":
-    Settings.render()
+elif page == "💬 Recruiter Chat":
+    Recruiter_ChatBot.render()
 
 elif page == "✨ Features":
     Features.render()
-    
+
+elif page == "⚙️ Settings":
+    Settings.render()
+
 elif page == "ℹ️ About":
     About.render()
 

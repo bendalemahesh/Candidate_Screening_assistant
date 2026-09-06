@@ -268,30 +268,7 @@ class DatabaseService:
 
         return candidate
 
-    def create_interview_table(self):
 
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS interviews(
-
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-            candidate_id INTEGER,
-
-            job_id INTEGER,
-
-            interview_date TEXT,
-
-            interview_time TEXT,
-
-            interviewer TEXT,
-
-            meeting_link TEXT,
-
-            notes TEXT
-        )
-        """)
-
-        self.conn.commit()
 
     def schedule_interview(
         self,

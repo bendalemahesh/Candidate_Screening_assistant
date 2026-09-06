@@ -13,6 +13,12 @@ def render():
 
     ✅ Job Description Matching
 
+    ✅ Upload Job Description
+
+    ✅ Interview Scheduling
+
+    ✅ Communication Template
+
     ✅ AI Recommendations
 
     ✅ Candidate Ranking

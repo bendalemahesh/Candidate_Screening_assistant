@@ -129,6 +129,36 @@ def create_tables():
     )
     """)
 
+    # ---------------- Interviews ---------------- #
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS interviews(
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        candidate_id INTEGER,
+
+        job_id INTEGER,
+
+        interview_date TEXT,
+
+        interview_time TEXT,
+
+        interview_mode TEXT,
+
+        meeting_link TEXT,
+
+        interviewer TEXT,
+
+        status TEXT,
+
+        notes TEXT,
+
+        FOREIGN KEY(candidate_id) REFERENCES candidates(id),
+        FOREIGN KEY(job_id) REFERENCES jobs(id)
+    )
+    """)
+
     conn.commit()
 
     conn.close()
