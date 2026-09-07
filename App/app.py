@@ -7,7 +7,7 @@ from components.footer import render_footer
 from components.custom_css import load_css
 
 # Import pages
-from pages import (
+from App.pages import (
     Candidate_Screening,
     Candidate_Ranking,
     Upload_Jobs,
