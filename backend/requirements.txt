@@ -5,6 +5,7 @@ pydantic
 python-dotenv
 
 langchain
+langchain-community
 langchain-groq
 groq
 langgraph
