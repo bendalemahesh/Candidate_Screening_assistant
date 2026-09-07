@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
-from App.database.create_tables import create_tables
+from ..App.database.create_tables import create_tables
 from App.components.sidebar import render_sidebar
 from App.components.footer import render_footer
 from App.components.custom_css import load_css
