@@ -1,10 +1,10 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
-from database.create_tables import create_tables
-from components.sidebar import render_sidebar
-from components.footer import render_footer
-from components.custom_css import load_css
+from App.database.create_tables import create_tables
+from App.components.sidebar import render_sidebar
+from App.components.footer import render_footer
+from App.components.custom_css import load_css
 
 # Import pages
 from pages import (
