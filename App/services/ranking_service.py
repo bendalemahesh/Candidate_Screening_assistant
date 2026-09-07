@@ -1,6 +1,6 @@
-from services.database_service import DatabaseService
-from services.matching_service import MatchingService
-from models.candidate_profile_model import (
+from App.services.database_service import DatabaseService
+from App.services.matching_service import MatchingService
+from App.models.candidate_profile_model import (
     CandidateProfile,
     Education,
     Experience,

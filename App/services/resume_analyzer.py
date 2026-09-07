@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 
-from prompts.ai_resume_analysis_prompt import AI_RESUME_ANALYSIS_PROMPT
-from schemas.analysis_schema import ResumeAnalysis
+from App.prompts.ai_resume_analysis_prompt import AI_RESUME_ANALYSIS_PROMPT
+from App.schemas.analysis_schema import ResumeAnalysis
 
 
 class ResumeAnalyzer:

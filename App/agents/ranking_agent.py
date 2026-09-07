@@ -1,4 +1,4 @@
-from agents.base_agent import BaseAgent
+from App.agents.base_agent import BaseAgent
 
 
 system_prompt = """

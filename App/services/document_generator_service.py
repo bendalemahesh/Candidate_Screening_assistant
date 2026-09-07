@@ -1,7 +1,7 @@
 import os
 import sqlite3
 
-from database.update_schema import DB_PATH
+from App.database.update_schema import DB_PATH
 
 BATCH_FOLDER = "App/storage/batches"
 

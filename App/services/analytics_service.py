@@ -1,13 +1,13 @@
 from collections import Counter
 
-from services.database_service import DatabaseService
-from models.candidate_profile_model import (
+from App.services.database_service import DatabaseService
+from App.models.candidate_profile_model import (
     CandidateProfile,
     Education,
     Experience,
     Certification,
 )
-from services.matching_service import MatchingService
+from App.services.matching_service import MatchingService
 
 class AnalyticsService:
 

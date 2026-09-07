@@ -1,7 +1,7 @@
-from services.spacy_service import SpacyService
-from prompts.job_description_parser_prompt import job_description_prompt
-from models.groq_model import llm
-from models.job_description_model import JobDescription
+from App.services.spacy_service import SpacyService
+from App.prompts.job_description_parser_prompt import job_description_prompt
+from App.models.groq_model import llm
+from App.models.job_description_model import JobDescription
 
 
 class JobDescriptionAgent:

@@ -1,6 +1,6 @@
-from agents.base_agent import BaseAgent
+from App.agents.base_agent import BaseAgent
 
-from tools.database_tool import (
+from App.tools.database_tool import (
     get_all_candidates,
     get_candidate_by_id,
     search_candidate,

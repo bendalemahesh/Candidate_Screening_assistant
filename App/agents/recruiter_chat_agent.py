@@ -1,6 +1,6 @@
-from agents.base_agent import BaseAgent
+from App.agents.base_agent import BaseAgent
 
-from tools.database_tool import *
+from App.tools.database_tool import *
 
 system_prompt = """
 You are an AI Recruiter.

@@ -1,6 +1,6 @@
 import sqlite3
 import math
-from database.update_schema import DB_PATH
+from App.database.update_schema import DB_PATH
 
 
 BATCH_SIZE = 200
