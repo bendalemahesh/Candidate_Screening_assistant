@@ -1,6 +1,6 @@
 import json
 
-from database.database import get_connection
+from App.database.database import get_connection
 
 class DatabaseService:
 
