@@ -5,15 +5,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 
-from database.database import get_connection
-from database.create_tables import create_tables
-from services.database_service import DatabaseService
-from services.document_loader_service import get_file_loader
-from services.matching_service import MatchingService
-from agents.resume_parser_agent import ResumeParserAgent
-from agents.job_description_agent import JobDescriptionAgent
-from models.job_description_model import JobDescription
-from models.candidate_profile_model import CandidateProfile
+from App.database.database import get_connection
+from App.database.create_tables import create_tables
+from App.services.database_service import DatabaseService
+from App.services.document_loader_service import get_file_loader
+from App.services.matching_service import MatchingService
+from App.agents.resume_parser_agent import ResumeParserAgent
+from App.agents.job_description_agent import JobDescriptionAgent
+from App.models.job_description_model import JobDescription
+from App.models.candidate_profile_model import CandidateProfile
 
 app = FastAPI(title="Recruiter AI Assistant API")
 
