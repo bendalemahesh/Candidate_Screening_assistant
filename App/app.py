@@ -2,9 +2,9 @@ from sympy import true
 import os
 import streamlit as st
 from dotenv import load_dotenv
-if true:
+try:
     from App.database.create_tables import create_tables
-else:
+except ModuleNotFoundError:
     from database.create_tables import create_tables
 
 from App.components.sidebar import render_sidebar
