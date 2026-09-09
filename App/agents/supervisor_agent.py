@@ -1,4 +1,4 @@
-from App.agents.base_agent import BaseAgent
+from agents.base_agent import BaseAgent
 
 SUPERVISOR_PROMPT = """
 You are the Supervisor Agent of the AI Recruiter.

@@ -1,9 +1,9 @@
-from App.services.spacy_service import SpacyService
-from App.prompts.resume_parser_prompt import resume_parser_prompt
-from App.models.groq_model import llm
-from App.models.candidate_profile_model import CandidateProfile
-from App.models.groq_model import llm
-from App.services.resume_analyzer import ResumeAnalyzer
+from services.spacy_service import SpacyService
+from prompts.resume_parser_prompt import resume_parser_prompt
+from models.groq_model import llm
+from models.candidate_profile_model import CandidateProfile
+from models.groq_model import llm
+from services.resume_analyzer import ResumeAnalyzer
 
 class ResumeParserAgent:
 

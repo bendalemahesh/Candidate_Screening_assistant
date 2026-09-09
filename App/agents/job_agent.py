@@ -1,6 +1,6 @@
-from App.agents.base_agent import BaseAgent
+from agents.base_agent import BaseAgent
 
-from App.tools.database_tool import (
+from tools.database_tool import (
     get_all_jobs,
     get_job_by_id,
     search_job,
