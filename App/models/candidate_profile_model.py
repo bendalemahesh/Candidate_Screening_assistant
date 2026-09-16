@@ -27,6 +27,7 @@ class Project(BaseModel):
 class Certification(BaseModel):
     name: Optional[str] = None
     issuer: Optional[str] = None
+    year: Optional[str] = None
 
 
 class CandidateProfile(BaseModel):
