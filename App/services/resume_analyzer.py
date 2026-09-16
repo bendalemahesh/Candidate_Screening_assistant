@@ -13,7 +13,8 @@ class ResumeAnalyzer:
         )
 
         self.chain = self.prompt | self.llm.with_structured_output(
-            ResumeAnalysis
+            ResumeAnalysis,
+            method="json_schema"
         )
 
     def analyze(self, candidate_data):

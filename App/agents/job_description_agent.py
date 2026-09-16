@@ -11,7 +11,8 @@ class JobDescriptionAgent:
         self.spacy = SpacyService()
 
         self.structured_llm = llm.with_structured_output(
-            JobDescription
+            JobDescription,
+            method="json_schema"
         )
 
         self.chain = (
