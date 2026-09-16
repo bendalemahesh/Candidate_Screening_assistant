@@ -11,7 +11,7 @@ from models.candidate_profile_model import (
 )
 
 load_dotenv()
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.getenv("BACKEND_URL", "https://candidate-screening-assistant.onrender.com")
 
 
 def _get_jobs():
@@ -236,4 +236,4 @@ def render():
 
                 st.divider()
                 st.subheader("📝 Summary")
-                st.write(candidate.summary)
+                st.write(candidate.summary)
