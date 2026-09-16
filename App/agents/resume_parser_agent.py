@@ -11,7 +11,10 @@ class ResumeParserAgent:
 
         self.spacy = SpacyService()
 
-        self.structured_llm = llm.with_structured_output(CandidateProfile)
+        self.structured_llm = llm.with_structured_output(
+            CandidateProfile,
+            method="json_schema"
+        )
 
         self.chain = resume_parser_prompt | self.structured_llm
 
