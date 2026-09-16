@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -18,7 +19,7 @@ class ResumeAnalysis(BaseModel):
     strengths: list[str]
     weaknesses: list[str]
     recommendation: str
-    resume_text: str
+    resume_text: Optional[str] = None  # optional so LLM omission doesn't fail validation
     
     model_config = {
         "extra": "ignore"

@@ -1,122 +1,68 @@
+import os
+import requests
 import streamlit as st
-from workflows.supervisor_workflow import SupervisorWorkflow
+from dotenv import load_dotenv
 
-supervisor = SupervisorWorkflow()
+load_dotenv()
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+
 
 def render():
 
     st.title("💬 Recruiter AI Assistant")
 
-    # ---------------- Initialize Chat ---------------- #
-
+    # ─── Initialize Chat History ───
     if "messages" not in st.session_state:
-
         st.session_state.messages = [
-
             {
                 "role": "assistant",
-                "content":
-                """
-                👋 Hello Recruiter!
-
-                I'm your **Recruiter AI Assistant**.
-
-                I can help you with:
-
-                • Candidate Search\n
-                • Job Search\n
-                • Candidate Ranking\n
-                • Recommendations\n
-                • Analytics\n
-
-                Ask me anything!
-                """
+                "content": (
+                    "👋 Hello Recruiter!\n\n"
+                    "I'm your **Recruiter AI Assistant**.\n\n"
+                    "I can help you with:\n"
+                    "- 📄 Candidate Search\n"
+                    "- 💼 Job Search\n"
+                    "- 🏆 Candidate Ranking\n"
+                    "- 📊 Analytics & Recommendations\n\n"
+                    "Ask me anything!"
+                )
             }
-
         ]
 
-    # ---------------- Display Chat History ---------------- #
-
+    # ─── Display Chat History ───
     for message in st.session_state.messages:
-
         with st.chat_message(message["role"]):
-
             st.markdown(message["content"])
 
-    # ---------------- Chat Input ---------------- #
-
-    prompt = st.chat_input(
-        "Ask me anything about candidates or jobs..."
-    )
-
-    reply = ""
+    # ─── Chat Input ───
+    prompt = st.chat_input("Ask me anything about candidates or jobs...")
 
     if prompt:
-
-        # Show User Message
-
-        st.session_state.messages.append(
-            {
-                "role": "user",
-                "content": prompt
-            }
-        )
-
+        # Show user message immediately
+        st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-
             st.markdown(prompt)
 
-        # Temporary Assistant Reply  
-
-        if prompt:
-            answer = supervisor.invoke(prompt)
-
-            st.session_state.messages.append(
-                {
-                    "role": "assistant",
-                    "content": answer
-                }
-            )
+        # Call backend /chat endpoint
+        with st.chat_message("assistant"):
+            with st.spinner("🤖 Thinking..."):
+                try:
+                    resp = requests.post(
+                        f"{BACKEND_URL}/chat",
+                        json={"query": prompt},
+                        timeout=60
+                    )
+                    resp.raise_for_status()
+                    answer = resp.json().get("reply", "Sorry, I couldn't generate a response.")
+                except requests.exceptions.ConnectionError:
+                    answer = (
+                        "⚠️ **Backend is offline.**\n\n"
+                        "Please start the FastAPI backend:\n"
+                        "```\nuvicorn App.backend.main:app --reload\n```"
+                    )
+                except Exception as e:
+                    answer = f"⚠️ Error communicating with backend: `{e}`"
 
             st.markdown(answer)
 
-        elif prompt == "help" or "what can you do":
-            reply = (
-                """
-            🤖 I can help you with:
-
-                📄 Candidates
-                • Show all candidates\n
-                • Search candidate\n
-                • Total candidates\n\n
-
-                💼 Jobs
-                • Show all jobs\n
-                • Search job\n
-                • Total jobs\n\n
-
-                🏆 Matching
-                • Best candidate\n
-                • Best job\n\n
-
-                📊 Analytics
-                • Candidate ranking\n
-
-            """
-            )
-        else:
-            reply = (
-                "🚧 I'm still under development.\n\n"
-                "Week 4 features are currently being added."
-            )
-
-            st.session_state.messages.append(
-                {
-                    "role": "assistant",
-                    "content": reply
-                }
-            )
-
-        with st.chat_message("assistant"):
-
-            st.markdown(reply)
+        st.session_state.messages.append({"role": "assistant", "content": answer})

@@ -1,6 +1,5 @@
 from langchain_community.document_loaders import Docx2txtLoader
 from langchain_community.document_loaders import PyPDFLoader
-from components.uploader import render_job_uploader, render_resume_uploader
 
 class DocumentLoaderService:
     def __init__(self):

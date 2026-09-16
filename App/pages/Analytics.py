@@ -1,89 +1,85 @@
+import os
+import requests
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from workflows.analytics_workflow import analytics_workflow
+from dotenv import load_dotenv
+
+load_dotenv()
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+
 
 def render():
     st.title("📊 Analytics")
 
-    response = analytics_workflow.invoke({
+    with st.spinner("Loading analytics..."):
+        try:
+            response = requests.get(f"{BACKEND_URL}/analytics", timeout=15)
+            response.raise_for_status()
+            data = response.json()
+        except Exception as e:
+            st.error(f"❌ Could not load analytics. Is the backend running?\n\n`{e}`")
+            return
 
-        "candidates": [],
-
-        "jobs": [],
-
-        "analytics": {}
-
-    })
-
-    data = response["analytics"]
-
-    skills_df = pd.DataFrame(
-
-    data["top_skills"],
-
-    columns=[
-
-        "Skill",
-
-        "Count"
-
-    ]
-
-)
-
-    # Display key metrics
+    # ─── Key Metrics ───
     col1, col2, col3 = st.columns(3)
-
     with col1:
-        st.metric("Total Candidates", data["total_candidates"])
-
+        st.metric("👥 Total Candidates", data["total_candidates"])
     with col2:
-        st.metric("Total Jobs", data["total_jobs"])
-
+        st.metric("💼 Total Jobs", data["total_jobs"])
     with col3:
-        st.metric(
-            "Average Match Score",
-            f"{data['average_match_score']:.2f}"
-        )
-    
+        st.metric("📊 Avg Match Score", f"{data['average_match_score']:.2f}%")
+
     st.divider()
 
-    st.subheader("🔥 Top Skills")
+    # ─── Top Skills Chart ───
+    top_skills = data.get("top_skills", [])
+    if top_skills:
+        skills_df = pd.DataFrame(top_skills, columns=["Skill", "Count"])
 
-    fig = px.bar(
+        st.subheader("🔥 Top Skills")
+        fig = px.bar(
+            skills_df,
+            x="Skill",
+            y="Count",
+            text="Count",
+            color="Count",
+            title="Most Common Candidate Skills"
+        )
+        fig.update_layout(
+            xaxis_title="Skills",
+            yaxis_title="Candidates",
+            template="plotly_dark",
+            height=450
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No skill data available yet. Screen some candidates first.")
 
-    skills_df,
+    st.divider()
 
-    x="Skill",
+    # ─── Match Score Distribution ───
+    match_scores = data.get("match_scores", [])
+    if match_scores:
+        st.subheader("📈 Match Score Distribution")
+        score_df = pd.DataFrame({"Match Score (%)": match_scores})
+        fig2 = px.histogram(
+            score_df,
+            x="Match Score (%)",
+            nbins=10,
+            title="Candidate Match Score Distribution",
+            template="plotly_dark"
+        )
+        fig2.update_layout(height=350)
+        st.plotly_chart(fig2, use_container_width=True)
 
-    y="Count",
+    st.divider()
 
-    text="Count",
-
-    title="Most Common Candidate Skills"
-
-    )
-
-    fig.update_layout(
-
-    xaxis_title="Skills",
-
-    yaxis_title="Candidates",
-
-    height=450
-
-    )
-
-    st.plotly_chart(
-
-    fig,
-
-    use_container_width=True
-
-    )
-    # Companies with most jobs
-    st.subheader("Companies")
-
-    for company, count in data["companies"]:
-        st.text(f"{company}: {count} jobs")
+    # ─── Companies ───
+    companies = data.get("companies", [])
+    if companies:
+        st.subheader("🏢 Hiring Companies")
+        for company, count in companies:
+            st.write(f"**{company}** — {count} job(s)")
+    else:
+        st.info("No job data available yet.")

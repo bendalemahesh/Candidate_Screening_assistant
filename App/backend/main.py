@@ -10,6 +10,8 @@ from database.create_tables import create_tables
 from services.database_service import DatabaseService
 from services.document_loader_service import get_file_loader
 from services.matching_service import MatchingService
+from services.dashboard_service import DashboardService
+from services.analytics_service import AnalyticsService
 from agents.resume_parser_agent import ResumeParserAgent
 from agents.job_description_agent import JobDescriptionAgent
 from models.job_description_model import JobDescription
@@ -25,18 +27,69 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Resolve upload paths relative to this file so they work regardless of CWD
+_BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+_APP_DIR = os.path.dirname(_BACKEND_DIR)
+RESUMES_DIR = os.path.join(_APP_DIR, "uploads", "assets", "resumes")
+JD_DIR = os.path.join(_APP_DIR, "uploads", "assets", "job_descriptions")
+
+
 @app.on_event("startup")
 def startup_event():
     create_tables()
-    # Ensure upload directories exist
-    os.makedirs("App/uploads/assets/resumes", exist_ok=True)
-    os.makedirs("App/uploads/assets/job_descriptions", exist_ok=True)
+    os.makedirs(RESUMES_DIR, exist_ok=True)
+    os.makedirs(JD_DIR, exist_ok=True)
+
 
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
 
-# --- Jobs ---
+
+# ─────────────────────────── Dashboard ───────────────────────────
+
+@app.get("/dashboard")
+def get_dashboard():
+    """Returns aggregated dashboard data (candidates, jobs, scores, skill stats)."""
+    try:
+        service = DashboardService()
+        data = service.get_dashboard_data()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Dashboard error: {str(e)}")
+
+
+# ─────────────────────────── Analytics ───────────────────────────
+
+@app.get("/analytics")
+def get_analytics():
+    """Returns analytics data (top skills, company stats, match scores)."""
+    try:
+        service = AnalyticsService()
+        data = service.get_dashboard_data()
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Analytics error: {str(e)}")
+
+
+# ─────────────────────────── Chat ───────────────────────────
+
+class ChatRequest(BaseModel):
+    query: str
+
+@app.post("/chat")
+def recruiter_chat(req: ChatRequest):
+    """Routes a recruiter query through the SupervisorWorkflow and returns a reply."""
+    try:
+        from workflows.supervisor_workflow import SupervisorWorkflow
+        supervisor = SupervisorWorkflow()
+        answer = supervisor.invoke(req.query)
+        return {"reply": answer}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat error: {str(e)}")
+
+
+# ─────────────────────────── Jobs ───────────────────────────
 
 @app.get("/jobs")
 def get_jobs():
@@ -46,6 +99,7 @@ def get_jobs():
         return jobs
     finally:
         db.close()
+
 
 @app.post("/jobs")
 def create_job(job: JobDescription):
@@ -58,26 +112,39 @@ def create_job(job: JobDescription):
     finally:
         db.close()
 
+
 @app.post("/jobs/upload")
 async def upload_job_description(file: UploadFile = File(...)):
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file uploaded")
-    
-    jd_path = os.path.join("App/uploads/assets/job_descriptions", file.filename)
+
+    jd_path = os.path.join(JD_DIR, file.filename)
     with open(jd_path, "wb") as f:
         f.write(await file.read())
-        
+
     try:
         docs = get_file_loader(jd_path)
         jd_text = "\n".join(doc.page_content for doc in docs)
-        
+
         agent = JobDescriptionAgent()
         job = agent.parse_job_description(jd_text)
         return {"job": job.model_dump()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse JD: {str(e)}")
 
-# --- Candidates ---
+
+@app.delete("/jobs/{job_id}")
+def delete_job(job_id: int):
+    db = DatabaseService()
+    try:
+        db.cursor.execute("DELETE FROM jobs WHERE id=?", (job_id,))
+        db.conn.commit()
+        return {"message": "Job deleted successfully"}
+    finally:
+        db.close()
+
+
+# ─────────────────────────── Candidates ───────────────────────────
 
 @app.get("/candidates")
 def get_candidates():
@@ -87,6 +154,7 @@ def get_candidates():
         return candidates
     finally:
         db.close()
+
 
 @app.get("/candidates/{candidate_id}")
 def get_candidate(candidate_id: int):
@@ -99,29 +167,31 @@ def get_candidate(candidate_id: int):
     finally:
         db.close()
 
+
 @app.post("/candidates/screen")
 async def screen_candidate(file: UploadFile = File(...)):
     """Uploads a resume, parses it, and returns the parsed candidate data."""
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file uploaded")
-        
-    resume_path = os.path.join("App/uploads/assets/resumes", file.filename)
+
+    resume_path = os.path.join(RESUMES_DIR, file.filename)
     with open(resume_path, "wb") as f:
         f.write(await file.read())
-        
+
     try:
         docs = get_file_loader(resume_path)
         resume_text = "\n".join(doc.page_content for doc in docs)
-        
+
         agent = ResumeParserAgent()
         result = agent.parse_resume(resume_text)
-        
+
         return {
             "candidate": result["candidate"].model_dump(),
             "analysis": result["analysis"].model_dump()
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse resume: {str(e)}")
+
 
 @app.post("/candidates")
 def save_candidate(candidate: CandidateProfile):
@@ -134,11 +204,24 @@ def save_candidate(candidate: CandidateProfile):
     finally:
         db.close()
 
-# --- Matching ---
+
+@app.delete("/candidates/{candidate_id}")
+def delete_candidate(candidate_id: int):
+    db = DatabaseService()
+    try:
+        db.cursor.execute("DELETE FROM candidates WHERE id=?", (candidate_id,))
+        db.conn.commit()
+        return {"message": "Candidate deleted successfully"}
+    finally:
+        db.close()
+
+
+# ─────────────────────────── Matching ───────────────────────────
 
 class MatchRequest(BaseModel):
     candidate: dict
     job: dict
+
 
 @app.post("/match")
 def calculate_match(request: MatchRequest):
@@ -149,7 +232,9 @@ def calculate_match(request: MatchRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Match calculation failed: {str(e)}")
 
-# --- Interviews ---
+
+# ─────────────────────────── Interviews ───────────────────────────
+
 class InterviewRequest(BaseModel):
     candidate_id: int
     job_id: int
@@ -159,6 +244,7 @@ class InterviewRequest(BaseModel):
     meeting_link: str
     notes: str
 
+
 @app.get("/interviews")
 def get_interviews():
     db = DatabaseService()
@@ -167,6 +253,7 @@ def get_interviews():
         return interviews
     finally:
         db.close()
+
 
 @app.post("/interviews")
 def schedule_interview(req: InterviewRequest):
@@ -184,6 +271,7 @@ def schedule_interview(req: InterviewRequest):
         return {"message": "Interview scheduled successfully"}
     finally:
         db.close()
+
 
 @app.delete("/interviews/{interview_id}")
 def delete_interview(interview_id: int):
