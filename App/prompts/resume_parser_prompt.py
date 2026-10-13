@@ -1,3 +1,4 @@
+
 from langchain_core.prompts import ChatPromptTemplate
 
 resume_parser_prompt = ChatPromptTemplate.from_messages(
@@ -27,59 +28,48 @@ IMPORTANT:
 
 The required structure is:
 
-{
+{{
     "full_name": null,
     "email": null,
     "phone": null,
     "location": null,
     "linkedin": null,
     "github": null,
-
-    "skills": [
-        "skill name"
-    ],
-
+    "skills": ["skill name"],
     "education": [
-        {
+        {{
             "degree": null,
             "branch": null,
             "college": null,
             "start_year": null,
             "end_year": null
-        }
+        }}
     ],
-
     "experience": [
-        {
+        {{
             "company": null,
             "designation": null,
             "duration": null,
             "description": null
-        }
+        }}
     ],
-
     "projects": [
-        {
+        {{
             "title": null,
             "description": null,
-            "technologies": [
-                "technology name"
-            ]
-        }
+            "technologies": ["technology name"]
+        }}
     ],
-
     "certifications": [
-        {
+        {{
             "name": null,
             "issuer": null,
             "year": null
-        }
+        }}
     ],
-
     "summary": null,
-
     "resume_text": null
-}
+}}
 
 FIELD RULES:
 
@@ -92,13 +82,13 @@ Each education entry must be an object containing:
 - end_year
 
 Example:
-{
+{{
     "degree": "B.Tech",
     "branch": "Computer Science and Data Science",
     "college": "ABC College",
     "start_year": "2022",
     "end_year": "2026"
-}
+}}
 
 EXPERIENCE:
 Each experience entry must be an object containing:
@@ -108,12 +98,12 @@ Each experience entry must be an object containing:
 - description
 
 Example:
-{
+{{
     "company": "ABC Technologies",
     "designation": "Data Science Intern",
     "duration": "June 2025 - August 2025",
     "description": "Worked on machine learning and data analysis."
-}
+}}
 
 PROJECTS:
 Each project entry must be an object containing:
@@ -122,7 +112,7 @@ Each project entry must be an object containing:
 - technologies
 
 Example:
-{
+{{
     "title": "Customer Churn Prediction",
     "description": "Built a machine learning model to predict customer churn.",
     "technologies": [
@@ -130,7 +120,7 @@ Example:
         "Pandas",
         "Scikit-learn"
     ]
-}
+}}
 
 CERTIFICATIONS:
 Each certification entry must be an object containing:
@@ -139,11 +129,11 @@ Each certification entry must be an object containing:
 - year
 
 Example:
-{
+{{
     "name": "Python Certification",
     "issuer": "Capabl India",
     "year": "2026"
-}
+}}
 
 If there are no projects, return:
 "projects": []
@@ -158,9 +148,7 @@ Resume content follows:
         ),
         (
             "human",
-            """
-{resume}
-"""
+            "{resume}"
         )
     ]
 )
